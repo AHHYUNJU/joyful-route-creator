@@ -26,6 +26,27 @@ export interface TripPlan {
   days: DayPlan[];
 }
 
+export interface TripReview {
+  id: string;
+  userId: string;
+  userName: string;
+  rating: number;
+  comment: string;
+  date: string;
+  helpful: number;
+}
+
+export interface OtherUserTrip {
+  id: string;
+  userId: string;
+  userName: string;
+  userType: string;
+  tripPlan: TripPlan;
+  reviews: TripReview[];
+  likes: number;
+  createdAt: string;
+}
+
 export const mockTripSpots: Record<string, TripSpot[]> = {
   "제주도": [
     {
@@ -136,6 +157,98 @@ export const mockTripSpots: Record<string, TripSpot[]> = {
     }
   ]
 };
+
+export const mockOtherUserTrips: OtherUserTrip[] = [
+  {
+    id: "trip-1",
+    userId: "user-1",
+    userName: "감성여행러 민지",
+    userType: "감성 스냅러",
+    tripPlan: {
+      title: "제주도 힐링 여행 코스",
+      duration: "2박3일",
+      location: "제주도",
+      interests: ["nature", "cafe"],
+      days: [
+        {
+          day: 1,
+          spots: [
+            mockTripSpots["제주도"][0], // 성산일출봉
+            mockTripSpots["제주도"][3], // 카페 델문도
+            mockTripSpots["제주도"][4]  // 우도
+          ],
+          totalDuration: 420
+        },
+        {
+          day: 2,
+          spots: [
+            mockTripSpots["제주도"][1], // 한라산
+            mockTripSpots["제주도"][2]  // 흑돼지 맛집
+          ],
+          totalDuration: 390
+        }
+      ]
+    },
+    reviews: [
+      {
+        id: "review-1",
+        userId: "reviewer-1",
+        userName: "여행매니아",
+        rating: 5,
+        comment: "정말 힐링되는 코스였어요! 특히 카페 델문도는 일몰이 너무 예뻤습니다.",
+        date: "2024-06-15",
+        helpful: 12
+      },
+      {
+        id: "review-2",
+        userId: "reviewer-2",
+        userName: "제주도러버",
+        rating: 4,
+        comment: "우도는 4월에 가니까 날씨가 좀 쌀쌀했지만 경치는 최고였어요!",
+        date: "2024-04-20",
+        helpful: 8
+      }
+    ],
+    likes: 24,
+    createdAt: "2024-06-01"
+  },
+  {
+    id: "trip-2",
+    userId: "user-2",
+    userName: "미식탐험가 준호",
+    userType: "미식집착파",
+    tripPlan: {
+      title: "제주도 맛집 투어",
+      duration: "1박2일",
+      location: "제주도",
+      interests: ["food", "culture"],
+      days: [
+        {
+          day: 1,
+          spots: [
+            mockTripSpots["제주도"][2], // 흑돼지 맛집
+            mockTripSpots["제주도"][5], // 동문시장
+            mockTripSpots["제주도"][3]  // 카페 델문도
+          ],
+          totalDuration: 270
+        }
+      ]
+    },
+    reviews: [
+      {
+        id: "review-3",
+        userId: "reviewer-3",
+        userName: "맛집헌터",
+        rating: 5,
+        comment: "돈사돈 정말 맛있어요! 11시 오픈하자마자 가는 걸 추천합니다.",
+        date: "2024-05-10",
+        helpful: 15
+      }
+    ],
+    likes: 18,
+    createdAt: "2024-05-01"
+  }
+];
 
 export const generateTripPlan = (location: string, duration: string, interests: string[]): TripPlan => {
   const spots = mockTripSpots[location] || [];

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Calendar, Clock, Heart } from "lucide-react";
 import { generateTripPlan, TripPlan } from "@/data/mockTripData";
 import TripPlanDisplay from "@/components/TripPlanDisplay";
+import OtherUsersTrips from "@/components/OtherUsersTrips";
 
 const TripPlanner = () => {
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
@@ -45,7 +46,7 @@ const TripPlanner = () => {
       <div className="container mx-auto max-w-2xl">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-            뚝딱뚝딱 나의 여행지 🐽
+            뚝딱뚝딱 나의 여행지
           </h1>
           <p className="text-gray-600">당신만의 완벽한 여행을 설계해보세요</p>
         </div>
@@ -184,6 +185,9 @@ const TripPlanner = () => {
           {generatedTrip && (
             <TripPlanDisplay tripPlan={generatedTrip} />
           )}
+
+          {/* 다른 사람들의 코스 */}
+          <OtherUsersTrips />
         </div>
       </div>
     </div>
