@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, Clock, Star, Edit, Plus, Trash2, RotateCcw } from "lucide-react";
 import { TripPlan, TripSpot } from "@/data/mockTripData";
+import { useNavigate } from "react-router-dom";
 
 interface TripPlanDisplayProps {
   tripPlan: TripPlan;
@@ -12,6 +13,7 @@ interface TripPlanDisplayProps {
 
 const TripPlanDisplay = ({ tripPlan, onRestart }: TripPlanDisplayProps) => {
   const [editingTripPlan, setEditingTripPlan] = useState<TripPlan>(tripPlan);
+  const navigate = useNavigate();
 
   const removeSpot = (dayIndex: number, spotIndex: number) => {
     const updatedTripPlan = { ...editingTripPlan };
@@ -39,6 +41,10 @@ const TripPlanDisplay = ({ tripPlan, onRestart }: TripPlanDisplayProps) => {
     setEditingTripPlan(updatedTripPlan);
   };
 
+  const handleNewPlanClick = () => {
+    navigate('/');
+  };
+
   return (
     <div className="space-y-6">
       <Card className="bg-white/80 backdrop-blur-sm shadow-lg">
@@ -49,7 +55,7 @@ const TripPlanDisplay = ({ tripPlan, onRestart }: TripPlanDisplayProps) => {
           <CardDescription className="text-center">
             AI가 당신의 취향에 맞게 생성한 여행 코스입니다
           </CardDescription>
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center gap-3 mt-4">
             <Button
               variant="outline"
               onClick={onRestart}
@@ -57,6 +63,14 @@ const TripPlanDisplay = ({ tripPlan, onRestart }: TripPlanDisplayProps) => {
             >
               <RotateCcw className="w-4 h-4" />
               다시 코스 짜기
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleNewPlanClick}
+              className="flex items-center gap-2 border-blue-200 text-blue-600 hover:bg-blue-50"
+            >
+              <RotateCcw className="w-4 h-4" />
+              새로 짜기
             </Button>
           </div>
         </CardHeader>
