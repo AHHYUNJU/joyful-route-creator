@@ -9,6 +9,7 @@ import { MapPin, Calendar, Clock, Heart } from "lucide-react";
 import { generateTripPlan, TripPlan } from "@/data/mockTripData";
 import TripPlanDisplay from "@/components/TripPlanDisplay";
 import OtherUsersTrips from "@/components/OtherUsersTrips";
+import Map from "@/components/Map";
 
 const TripPlanner = () => {
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
@@ -39,6 +40,13 @@ const TripPlanner = () => {
     console.log("Generating trip with:", { location, duration, selectedInterests });
     const tripPlan = generateTripPlan(location, duration, selectedInterests);
     setGeneratedTrip(tripPlan);
+  };
+
+  const restartPlanning = () => {
+    setGeneratedTrip(null);
+    setLocation("");
+    setSelectedInterests([]);
+    setDuration("2박3일");
   };
 
   return (
@@ -161,13 +169,7 @@ const TripPlanner = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="w-full h-64 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg flex items-center justify-center">
-                <div className="text-center text-gray-500">
-                  <MapPin className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                  <p>지도가 여기에 표시됩니다</p>
-                  <p className="text-sm">여행지를 선택해주세요</p>
-                </div>
-              </div>
+              <Map location={location} />
             </CardContent>
           </Card>
 
@@ -183,7 +185,7 @@ const TripPlanner = () => {
 
           {/* 생성된 여행 코스 표시 */}
           {generatedTrip && (
-            <TripPlanDisplay tripPlan={generatedTrip} />
+            <TripPlanDisplay tripPlan={generatedTrip} onRestart={restartPlanning} />
           )}
 
           {/* 다른 사람들의 코스 */}

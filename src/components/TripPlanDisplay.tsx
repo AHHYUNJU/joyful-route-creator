@@ -1,16 +1,16 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Clock, Star, Edit, Plus, Trash2 } from "lucide-react";
+import { MapPin, Clock, Star, Edit, Plus, Trash2, RotateCcw } from "lucide-react";
 import { TripPlan, TripSpot } from "@/data/mockTripData";
 
 interface TripPlanDisplayProps {
   tripPlan: TripPlan;
+  onRestart?: () => void;
 }
 
-const TripPlanDisplay = ({ tripPlan }: TripPlanDisplayProps) => {
+const TripPlanDisplay = ({ tripPlan, onRestart }: TripPlanDisplayProps) => {
   const [editingTripPlan, setEditingTripPlan] = useState<TripPlan>(tripPlan);
 
   const removeSpot = (dayIndex: number, spotIndex: number) => {
@@ -49,6 +49,16 @@ const TripPlanDisplay = ({ tripPlan }: TripPlanDisplayProps) => {
           <CardDescription className="text-center">
             AI가 당신의 취향에 맞게 생성한 여행 코스입니다
           </CardDescription>
+          <div className="flex justify-center mt-4">
+            <Button
+              variant="outline"
+              onClick={onRestart}
+              className="flex items-center gap-2"
+            >
+              <RotateCcw className="w-4 h-4" />
+              다시 코스 짜기
+            </Button>
+          </div>
         </CardHeader>
       </Card>
 

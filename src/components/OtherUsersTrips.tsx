@@ -1,4 +1,4 @@
-
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -6,6 +6,113 @@ import { Heart, Star, ThumbsUp, Calendar, MapPin } from "lucide-react";
 import { mockOtherUserTrips, OtherUserTrip } from "@/data/mockTripData";
 
 const OtherUsersTrips = () => {
+  const [likedTrips, setLikedTrips] = useState<Set<string>>(new Set());
+  const [selectedTrip, setSelectedTrip] = useState<OtherUserTrip | null>(null);
+
+  const toggleLike = (tripId: string) => {
+    setLikedTrips(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(tripId)) {
+        newSet.delete(tripId);
+      } else {
+        newSet.add(tripId);
+      }
+      return newSet;
+    });
+  };
+
+  const viewTripDetails = (trip: OtherUserTrip) => {
+    setSelectedTrip(trip);
+  };
+
+  if (selectedTrip) {
+    return (
+      <Card className="bg-white/80 backdrop-blur-sm shadow-lg">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Heart className="w-5 h-5 text-pink-500" />
+              {selectedTrip.tripPlan.title}
+            </CardTitle>
+            <Button variant="outline" onClick={() => setSelectedTrip(null)}>
+              목록으로 돌아가기
+            </Button>
+          </div>
+          <CardDescription>
+            {selectedTrip.userName}님의 {selectedTrip.tripPlan.location} 여행 코스
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex items-center gap-4 text-sm text-gray-600">
+            <div className="flex items-center gap-1">
+              <MapPin className="w-4 h-4" />
+              <span>{selectedTrip.tripPlan.location}</span>
+            </div>
+            <span>{selectedTrip.tripPlan.duration}</span>
+            <div className="flex items-center gap-1">
+              <Heart className="w-4 h-4 text-red-500" />
+              <span>{selectedTrip.likes + (likedTrips.has(selectedTrip.id) ? 1 : 0)}</span>
+            </div>
+          </div>
+
+          {selectedTrip.tripPlan.days.map((day) => (
+            <div key={day.day} className="border rounded-lg p-4 bg-gray-50">
+              <h4 className="font-semibold mb-3">Day {day.day}</h4>
+              <div className="space-y-3">
+                {day.spots.map((spot, index) => (
+                  <div key={spot.id} className="flex items-start gap-3">
+                    <div className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                      {index + 1}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h5 className="font-medium">{spot.name}</h5>
+                        <div className="flex items-center gap-1">
+                          <Star className="w-3 h-3 text-yellow-500 fill-current" />
+                          <span className="text-sm">{spot.rating}</span>
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-1">{spot.description}</p>
+                      <div className="flex items-center gap-3 text-xs text-gray-500">
+                        <span>{spot.location}</span>
+                        <span>{Math.floor(spot.duration / 60)}시간 {spot.duration % 60}분</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          {selectedTrip.reviews.length > 0 && (
+            <div className="space-y-4">
+              <h4 className="font-semibold">여행 후기</h4>
+              {selectedTrip.reviews.map((review) => (
+                <div key={review.id} className="bg-white rounded-lg p-4 border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="font-medium">{review.userName}</span>
+                    <div className="flex items-center gap-1">
+                      <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                      <span>{review.rating}</span>
+                    </div>
+                    <span className="text-sm text-gray-500">{review.date}</span>
+                  </div>
+                  <p className="text-gray-600 mb-2">{review.comment}</p>
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <div className="flex items-center gap-1">
+                      <ThumbsUp className="w-4 h-4" />
+                      <span>{review.helpful}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="bg-white/80 backdrop-blur-sm shadow-lg">
       <CardHeader>
@@ -33,10 +140,19 @@ const OtherUsersTrips = () => {
                 </div>
               </div>
               <div className="flex items-center gap-4 text-sm text-gray-500">
-                <div className="flex items-center gap-1">
-                  <Heart className="w-4 h-4 text-red-500" />
-                  <span>{userTrip.likes}</span>
-                </div>
+                <button
+                  onClick={() => toggleLike(userTrip.id)}
+                  className="flex items-center gap-1 hover:text-red-500 transition-colors"
+                >
+                  <Heart 
+                    className={`w-4 h-4 ${
+                      likedTrips.has(userTrip.id) 
+                        ? 'text-red-500 fill-current' 
+                        : 'text-red-500'
+                    }`} 
+                  />
+                  <span>{userTrip.likes + (likedTrips.has(userTrip.id) ? 1 : 0)}</span>
+                </button>
                 <div className="flex items-center gap-1">
                   <Calendar className="w-4 h-4" />
                   <span>{userTrip.createdAt}</span>
@@ -101,7 +217,12 @@ const OtherUsersTrips = () => {
               </div>
             )}
             
-            <Button variant="outline" size="sm" className="w-full">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="w-full"
+              onClick={() => viewTripDetails(userTrip)}
+            >
               이 코스 자세히 보기
             </Button>
           </div>
