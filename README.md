@@ -1,73 +1,134 @@
-# Welcome to your Lovable project
+# 🗺️ 뚝딱뚝딱 나의 여행지
 
-## Project info
+**나만의 성향 기반 맞춤 여행 코스를 추천해주는 스마트 여행 설계 서비스!**
+여행지를 정하는 것도 귀찮은 당신을 위해,
+AI가 성격 + 취향 + 이동 최적화까지 고려한 코스를 딱 맞게 짜드립니다.
 
-**URL**: https://lovable.dev/projects/7a1d86a0-65ae-4004-86f5-74328478e931
+---
 
-## How can I edit this code?
+## 🔗 배포 URL
 
-There are several ways of editing your application.
+👉 [사이트 바로가기](https://joyful-route-creator.lovable.app)
 
-**Use Lovable**
+---
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/7a1d86a0-65ae-4004-86f5-74328478e931) and start prompting.
+## 👤 페르소나 (Personas)
 
-Changes made via Lovable will be committed automatically to this repo.
+### 1. 💼 바쁜 직장인 – 김주렁 (30세)
 
-**Use your preferred IDE**
+- **직업**: IT 회사 백엔드 개발자
+- **라이프스타일**: 평일 출퇴근 반복, 점심은 혼자 카페에서, 주말엔 무기력
+- **목표**: 짧은 휴가를 알차게 보내기 위한 효율적 코스 설계
+- **니즈**: 내가 찜한 장소만 입력하면 나머지를 자동으로 채워주면 좋겠음
+- **페인포인트**: 결정 피로, 시간 부족, 일정짜기 귀찮음
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 2. 🎒 감성 기록러 – 이보람 (26세)
 
-Follow these steps:
+- **직업**: 대학원생 / 글 쓰기 좋아함
+- **라이프스타일**: 여행 후 사진 편집, 블로그 후기 정리
+- **목표**: 감성적이고 인상적인 장소 중심의 여유로운 여행
+- **니즈**: 후기와 분위기를 보고 코스를 고르고 싶음
+- **페인포인트**: 후기 없는 장소는 불안, 정보가 딱딱하면 흥미 떨어짐
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### 3. 👪 가족 여행 설계자 – 박은재 (42세)
 
-# Step 3: Install the necessary dependencies.
-npm i
+- **직업**: 초등 자녀 2명의 워킹맘
+- **라이프스타일**: 주말/방학 위주 가족 여행 주도
+- **목표**: 아이도, 부모도 만족할 수 있는 균형 있는 일정
+- **니즈**: 이동이 적고, 휴식이 포함된 여정
+- **페인포인트**: 일정 짜는 스트레스, 아이 체력 고려 필요
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+---
 
-**Edit a file directly in GitHub**
+## 🧾 사용자 시나리오 및 스토리
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### ✅ 사용자: 김주렁 (직장인)
 
-**Use GitHub Codespaces**
+**상황**: 혼자 제주도 2박 3일, 맛집 2군데만 찜하고 다른 계획은 X
+**스토리**:
+스마트폰에서 ‘뚝딱뚝딱 나의 여행지’ 접속
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+성격 테스트 진행 → 효율형 여행자
 
-## What technologies are used for this project?
+가고 싶은 맛집 2곳과 숙소 입력
 
-This project is built with:
+AI가 자동으로 전체 코스 + 최적 경로 구성
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+다른 사용자의 코스도 참고해 일정 일부 반영
 
-## How can I deploy this project?
+여행 후 간단한 후기 작성
 
-Simply open [Lovable](https://lovable.dev/projects/7a1d86a0-65ae-4004-86f5-74328478e931) and click on Share -> Publish.
+yaml
+복사
+편집
 
-## Can I connect a custom domain to my Lovable project?
+> “딱 내가 고른 장소만 넣어도 나머지를 똑똑하게 채워줘서 너무 편함!”
 
-Yes, you can!
+---
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### ✅ 사용자: 이보람 (감성 여행자)
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+**상황**: 감성카페 + 산책로 중심 1박 2일 여행
+**스토리**:
+성향 테스트 → 감성 여유형 여행자
+
+키워드 입력: 감성카페, 일몰명소, 한적한 산책로
+
+AI가 키워드 기반 코스 추천
+
+후기 많은 장소 우선 선택
+
+여행 후 감성 사진 + 후기 업로드
+
+yaml
+복사
+편집
+
+> “이건 내 감성 저장소! 진짜 취향 저격이었어요.”
+
+---
+
+### ✅ 사용자: 박은재 (가족 여행자)
+
+**상황**: 가족 1박 2일, 아이도 좋아하고 부모도 쉴 수 있는 일정 필요
+**스토리**:
+성향 테스트 → 느긋한 가족형 여행자
+
+장소 입력: 키즈카페, 펜션, 공원
+
+AI가 이동 적고 쉬는 시간 많은 코스로 자동 추천
+
+시간대별 구성 + 후기 참고
+
+여행 후 사진 정리 및 후기 작성
+
+yaml
+복사
+편집
+
+> “아이도 만족, 엄마도 만족, 다음에도 이 코스로 가고 싶어요!”
+
+---
+
+## 📌 주요 기능 요약
+
+| 기능                     | 설명                                                |
+| ------------------------ | --------------------------------------------------- |
+| 성격 기반 여행 성향 분석 | 간단한 테스트로 여행 스타일 분석                    |
+| 관심지 입력 및 수집      | 장소, 키워드, 지도 기반 관심지 등록                 |
+| AI 여행 코스 자동 추천   | 성향 + 관심지 조합으로 최적화된 코스 구성           |
+| 일정 수정 가능           | 사용자 자유 편집 기능 (드래그 앤 드롭)              |
+| 사용자 후기 기반 팁 제공 | 실시간이 아닌 경험 기반의 실질적 후기 중심          |
+| 후기 피드백 이모지       | "도움됐어요!", "지금은 아니에요"로 정보 신뢰도 보완 |
+
+---
+
+## ✨ 기획 목표
+
+- 사용자의 성향과 상황에 꼭 맞는 **여행 코스 자동화**
+- 불필요한 결정 피로 줄이기
+- 실시간 커뮤니티 대신 **후기 기반의 실용 정보 제공**
