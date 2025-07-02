@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { useNavigate } from "react-router-dom";
+import PersonalityTestResult from "@/components/PersonalityTestResult";
 
 const questions = [
   {
@@ -44,7 +44,6 @@ const PersonalityTest = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [result, setResult] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   const handleAnswer = (questionId: number, value: string) => {
     setAnswers(prev => ({ ...prev, [questionId]: value }));
@@ -76,54 +75,22 @@ const PersonalityTest = () => {
     setResult(dominantType);
   };
 
-  const getTypeDescription = (type: string) => {
-    const descriptions: Record<string, string> = {
-      "자연 힐링파": "🌿 당신은 자연의 평화로움을 사랑하는 힐링 여행자입니다. 조용한 산이나 바다에서 마음의 안정을 찾으세요.",
-      "도시탐험파": "🏙️ 당신은 도시의 역동적인 에너지를 즐기는 모험가입니다. 새로운 장소와 문화를 적극적으로 탐험하세요.",
-      "미식집착파": "🍽️ 당신은 여행의 참된 즐거움을 음식에서 찾는 미식가입니다. 현지의 특별한 맛을 놓치지 마세요.",
-      "감성 스냅러": "📷 당신은 아름다운 순간을 포착하는 감성적인 여행자입니다. 특별한 장소에서 소중한 추억을 만드세요."
-    };
-    return descriptions[type] || "";
+  const restartTest = () => {
+    setCurrentQuestion(0);
+    setAnswers({});
+    setResult(null);
   };
 
   if (result) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-2xl bg-white/90 backdrop-blur-sm shadow-2xl">
-          <CardHeader className="text-center">
-            <CardTitle className="text-3xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              당신의 여행 성향
-            </CardTitle>
-            <CardDescription className="text-lg mt-4">
-              <span className="text-2xl font-bold text-gray-800">{result}</span>
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="text-center space-y-6">
-            <p className="text-lg text-gray-700 leading-relaxed">
-              {getTypeDescription(result)}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
-                className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-                onClick={() => navigate('/trip-planner')}
-              >
-                맞춤 여행 코스 만들기
-              </Button>
-              <Button 
-                variant="outline" 
-                size="lg"
-                onClick={() => {
-                  setCurrentQuestion(0);
-                  setAnswers({});
-                  setResult(null);
-                }}
-              >
-                다시 테스트하기
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="w-full max-w-2xl">
+          <PersonalityTestResult 
+            result={result} 
+            answers={answers}
+            onRestart={restartTest}
+          />
+        </div>
       </div>
     );
   }

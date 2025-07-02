@@ -1,13 +1,15 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Calendar, Clock, Heart } from "lucide-react";
+import { MapPin, Heart, Sparkles } from "lucide-react";
 import { generateTripPlan, TripPlan } from "@/data/mockTripData";
 import TripPlanDisplay from "@/components/TripPlanDisplay";
+import TripSummaryCard from "@/components/TripSummaryCard";
+import TripDatePicker from "@/components/TripDatePicker";
 import OtherUsersTrips from "@/components/OtherUsersTrips";
 import Map from "@/components/Map";
 
@@ -16,6 +18,8 @@ const TripPlanner = () => {
   const [duration, setDuration] = useState("2박3일");
   const [location, setLocation] = useState("");
   const [generatedTrip, setGeneratedTrip] = useState<TripPlan | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [personalityData, setPersonalityData] = useState<any>(null);
 
   const interests = [
     { id: "nature", label: "자연/산책", emoji: "🌲" },
@@ -28,6 +32,25 @@ const TripPlanner = () => {
     { id: "quiet", label: "조용한 힐링", emoji: "🧘" }
   ];
 
+  // Load personality data on component mount
+  useEffect(() => {
+    const stored = localStorage.getItem('personalityResult');
+    if (stored) {
+      const data = JSON.parse(stored);
+      setPersonalityData(data);
+      
+      // Auto-apply personality interests
+      if (data.interests) {
+        setSelectedInterests(data.interests);
+      }
+      
+      // Suggest recommended locations
+      if (data.recommendations && data.recommendations.length > 0 && !location) {
+        // Don't auto-set location, just make it available for suggestion
+      }
+    }
+  }, []);
+
   const toggleInterest = (interestId: string) => {
     setSelectedInterests(prev => 
       prev.includes(interestId) 
@@ -36,17 +59,40 @@ const TripPlanner = () => {
     );
   };
 
-  const generateTrip = () => {
+  const generateTrip = async () => {
+    if (isGenerating) return;
+    
+    setIsGenerating(true);
     console.log("Generating trip with:", { location, duration, selectedInterests });
+    
+    // Simulate loading time for better UX
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
     const tripPlan = generateTripPlan(location, duration, selectedInterests);
     setGeneratedTrip(tripPlan);
+    setIsGenerating(false);
   };
 
   const restartPlanning = () => {
     setGeneratedTrip(null);
+    setIsGenerating(false);
+  };
+
+  const handleNewPlan = () => {
+    setGeneratedTrip(null);
     setLocation("");
-    setSelectedInterests([]);
+    setSelectedInterests(personalityData?.interests || []);
     setDuration("2박3일");
+    setIsGenerating(false);
+  };
+
+  const handleDateChange = (startDate: Date | undefined, endDate: Date | undefined, returnTime?: string) => {
+    // Handle date changes from the calendar picker
+    console.log("Date changed:", { startDate, endDate, returnTime });
+  };
+
+  const handleDurationChange = (newDuration: string) => {
+    setDuration(newDuration);
   };
 
   return (
@@ -57,6 +103,16 @@ const TripPlanner = () => {
             뚝딱뚝딱 나의 여행지
           </h1>
           <p className="text-gray-600">당신만의 완벽한 여행을 설계해보세요</p>
+          
+          {personalityData && (
+            <div className="mt-4 p-3 bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg">
+              <div className="flex items-center justify-center gap-2 text-purple-700">
+                <Sparkles className="w-4 h-4" />
+                <span className="font-medium">{personalityData.type}</span>
+                <span className="text-sm">성향이 반영되었습니다</span>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="space-y-6">
@@ -67,6 +123,11 @@ const TripPlanner = () => {
                 <MapPin className="w-5 h-5 text-blue-500" />
                 여행지 선택
               </CardTitle>
+              {personalityData?.recommendations && (
+                <CardDescription>
+                  <strong>{personalityData.type}</strong>에게 추천: {personalityData.recommendations.join(', ')}
+                </CardDescription>
+              )}
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -78,24 +139,30 @@ const TripPlanner = () => {
                   onChange={(e) => setLocation(e.target.value)}
                   className="mt-2"
                 />
-              </div>
-              <div>
-                <Label>여행 기간</Label>
-                <div className="flex gap-2 mt-2">
-                  {["당일치기", "1박2일", "2박3일", "3박4일"].map((period) => (
-                    <Button
-                      key={period}
-                      variant={duration === period ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setDuration(period)}
-                    >
-                      {period}
-                    </Button>
-                  ))}
-                </div>
+                {personalityData?.recommendations && (
+                  <div className="flex gap-2 mt-2 flex-wrap">
+                    {personalityData.recommendations.map((rec: string) => (
+                      <Button
+                        key={rec}
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setLocation(rec)}
+                        className="text-xs"
+                      >
+                        {rec}
+                      </Button>
+                    ))}
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
+
+          {/* 여행 일정 선택 */}
+          <TripDatePicker 
+            onDateChange={handleDateChange}
+            onDurationChange={handleDurationChange}
+          />
 
           {/* 관심사 선택 */}
           <Card className="bg-white/80 backdrop-blur-sm shadow-lg">
@@ -103,6 +170,11 @@ const TripPlanner = () => {
               <CardTitle className="flex items-center gap-2">
                 <Heart className="w-5 h-5 text-pink-500" />
                 관심사 선택
+                {personalityData && (
+                  <Badge variant="secondary" className="text-xs">
+                    성향 기반 자동 선택됨
+                  </Badge>
+                )}
               </CardTitle>
               <CardDescription>
                 관심 있는 여행 테마를 선택해주세요 (복수 선택 가능)
@@ -125,41 +197,6 @@ const TripPlanner = () => {
             </CardContent>
           </Card>
 
-          {/* 선택된 여행 정보 */}
-          <Card className="bg-white/80 backdrop-blur-sm shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-green-500" />
-                선택된 여행 정보
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-gray-500" />
-                <span className="font-medium">목적지:</span>
-                <span>{location || "미선택"}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-gray-500" />
-                <span className="font-medium">기간:</span>
-                <span>{duration}</span>
-              </div>
-              <div>
-                <span className="font-medium">관심사:</span>
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {selectedInterests.map((interestId) => {
-                    const interest = interests.find(i => i.id === interestId);
-                    return (
-                      <Badge key={interestId} variant="secondary" className="text-xs">
-                        {interest?.emoji} {interest?.label}
-                      </Badge>
-                    );
-                  })}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
           {/* 지도 미리보기 */}
           <Card className="bg-white/80 backdrop-blur-sm shadow-lg">
             <CardHeader>
@@ -174,18 +211,33 @@ const TripPlanner = () => {
           </Card>
 
           {/* 여행 코스 생성 버튼 */}
-          <Button 
-            size="lg" 
-            className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-            onClick={generateTrip}
-            disabled={!location.trim()}
-          >
-            맞춤 여행 코스 생성하기 ✨
-          </Button>
+          <div className="flex gap-3">
+            <Button 
+              size="lg" 
+              className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+              onClick={generateTrip}
+              disabled={!location.trim() || isGenerating}
+            >
+              {isGenerating ? "여행 코스 생성 중..." : "맞춤 여행 코스 생성하기 ✨"}
+            </Button>
+            {generatedTrip && (
+              <Button 
+                variant="outline" 
+                size="lg"
+                onClick={handleNewPlan}
+                className="border-blue-200 text-blue-600 hover:bg-blue-50"
+              >
+                새로 짜기
+              </Button>
+            )}
+          </div>
 
           {/* 생성된 여행 코스 표시 */}
           {generatedTrip && (
-            <TripPlanDisplay tripPlan={generatedTrip} onRestart={restartPlanning} />
+            <div className="space-y-6">
+              <TripSummaryCard tripPlan={generatedTrip} />
+              <TripPlanDisplay tripPlan={generatedTrip} onRestart={restartPlanning} />
+            </div>
           )}
 
           {/* 다른 사람들의 코스 */}
