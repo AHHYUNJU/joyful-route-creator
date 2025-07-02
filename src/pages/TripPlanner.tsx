@@ -189,7 +189,11 @@ const TripPlanner = () => {
           )}
 
           {/* 다른 사람들의 코스 */}
-          <OtherUsersTrips />
+          <OtherUsersTrips 
+            selectedLocation={location}
+            selectedDuration={duration}
+            selectedInterests={selectedInterests}
+          />
         </div>
       </div>
     </div>

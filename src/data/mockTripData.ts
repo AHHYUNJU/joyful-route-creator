@@ -434,5 +434,161 @@ export const mockOtherUserTrips: OtherUserTrip[] = [
     ],
     likes: 18,
     createdAt: "2024-05-01"
+  },
+  {
+    id: "trip-3",
+    userId: "user-3",
+    userName: "도시탐험가 수현",
+    userType: "도심러버",
+    tripPlan: {
+      title: "서울 문화유산 탐방",
+      duration: "2박3일",
+      location: "서울",
+      interests: ["culture", "food"],
+      days: [
+        {
+          day: 1,
+          spots: [
+            mockTripSpots["서울"][0], // 경복궁
+            mockTripSpots["서울"][3], // 북촌한옥마을
+          ],
+          totalDuration: 270
+        },
+        {
+          day: 2,
+          spots: [
+            mockTripSpots["서울"][1], // 명동
+            mockTripSpots["서울"][5], // 이태원 맛집거리
+          ],
+          totalDuration: 300
+        }
+      ]
+    },
+    reviews: [
+      {
+        id: "review-4",
+        userId: "reviewer-4",
+        userName: "역사애호가",
+        rating: 5,
+        comment: "경복궁 수문장 교대식 꼭 보세요! 북촌한옥마을도 사진찍기 좋아요.",
+        date: "2024-06-20",
+        helpful: 20
+      }
+    ],
+    likes: 32,
+    createdAt: "2024-06-10"
+  },
+  {
+    id: "trip-4",
+    userId: "user-4",
+    userName: "야경사진작가 현우",
+    userType: "사진작가",
+    tripPlan: {
+      title: "서울 야경 투어",
+      duration: "1박2일",
+      location: "서울",
+      interests: ["nightlife", "nature"],
+      days: [
+        {
+          day: 1,
+          spots: [
+            mockTripSpots["서울"][4], // 남산타워
+            mockTripSpots["서울"][2], // 홍대
+          ],
+          totalDuration: 390
+        }
+      ]
+    },
+    reviews: [
+      {
+        id: "review-5",
+        userId: "reviewer-5",
+        userName: "사진매니아",
+        rating: 5,
+        comment: "남산타워에서 본 서울 야경은 정말 장관이에요! 홍대도 밤에 가니 더 활기차더라고요.",
+        date: "2024-05-25",
+        helpful: 18
+      }
+    ],
+    likes: 28,
+    createdAt: "2024-05-15"
+  },
+  {
+    id: "trip-5",
+    userId: "user-5",
+    userName: "바다사랑 지혜",
+    userType: "바다매니아",
+    tripPlan: {
+      title: "부산 해변 힐링 코스",
+      duration: "2박3일",
+      location: "부산",
+      interests: ["nature", "nightlife"],
+      days: [
+        {
+          day: 1,
+          spots: [
+            mockTripSpots["부산"][0], // 해운대 해수욕장
+            mockTripSpots["부산"][1], // 광안리 해변
+          ],
+          totalDuration: 210
+        },
+        {
+          day: 2,
+          spots: [
+            mockTripSpots["부산"][4], // 태종대
+            mockTripSpots["부산"][2], // 자갈치시장
+          ],
+          totalDuration: 330
+        }
+      ]
+    },
+    reviews: [
+      {
+        id: "review-6",
+        userId: "reviewer-6",
+        userName: "바다여행러",
+        rating: 4,
+        comment: "광안리 야경이 정말 예뻐요! 태종대에서 보는 절벽 풍경도 인상적이었습니다.",
+        date: "2024-06-05",
+        helpful: 14
+      }
+    ],
+    likes: 22,
+    createdAt: "2024-05-20"
+  },
+  {
+    id: "trip-6",
+    userId: "user-6",
+    userName: "문화탐방가 은영",
+    userType: "문화애호가",
+    tripPlan: {
+      title: "부산 문화 체험 여행",
+      duration: "1박2일",
+      location: "부산",
+      interests: ["culture", "food"],
+      days: [
+        {
+          day: 1,
+          spots: [
+            mockTripSpots["부산"][3], // 감천문화마을
+            mockTripSpots["부산"][2], // 자갈치시장
+          ],
+          totalDuration: 270
+        }
+      ]
+    },
+    reviews: [
+      {
+        id: "review-7",
+        userId: "reviewer-7",
+        userName: "문화체험러",
+        rating: 5,
+        comment: "감천문화마을 정말 예뻐요! 알록달록한 집들 사이를 걸으며 사진도 많이 찍었어요.",
+        date: "2024-05-30",
+        helpful: 16
+      }
+    ],
+    likes: 25,
+    createdAt: "2024-05-25"
   }
 ];
