@@ -153,45 +153,178 @@ export const mockTripSpots: Record<string, TripSpot[]> = {
       location: "부산광역시 중구",
       duration: 150,
       rating: 4.2
+    },
+    {
+      id: "busan-4",
+      name: "감천문화마을",
+      category: "culture",
+      description: "알록달록한 집들이 예쁜 문화마을",
+      location: "부산광역시 사하구",
+      duration: 120,
+      rating: 4.5
+    },
+    {
+      id: "busan-5",
+      name: "태종대",
+      category: "nature",
+      description: "절벽과 바다 경치가 아름다운 자연공원",
+      location: "부산광역시 영도구",
+      duration: 180,
+      rating: 4.4
+    }
+  ],
+  "서울": [
+    {
+      id: "seoul-1",
+      name: "경복궁",
+      category: "culture",
+      description: "조선시대 대표 궁궐",
+      location: "서울특별시 종로구",
+      duration: 150,
+      rating: 4.6
+    },
+    {
+      id: "seoul-2",
+      name: "명동",
+      category: "shopping",
+      description: "서울의 대표 쇼핑가",
+      location: "서울특별시 중구",
+      duration: 180,
+      rating: 4.2
+    },
+    {
+      id: "seoul-3",
+      name: "홍대",
+      category: "nightlife",
+      description: "젊음의 거리, 클럽과 �ub이 많은 곳",
+      location: "서울특별시 마포구",
+      duration: 240,
+      rating: 4.3
+    },
+    {
+      id: "seoul-4",
+      name: "북촌한옥마을",
+      category: "culture",
+      description: "전통 한옥이 잘 보존된 마을",
+      location: "서울특별시 종로구",
+      duration: 120,
+      rating: 4.4
+    },
+    {
+      id: "seoul-5",
+      name: "남산타워",
+      category: "nature",
+      description: "서울 전경을 볼 수 있는 타워",
+      location: "서울특별시 중구",
+      duration: 150,
+      rating: 4.5
+    },
+    {
+      id: "seoul-6",
+      name: "이태원 맛집거리",
+      category: "food",
+      description: "다양한 세계 음식을 맛볼 수 있는 곳",
+      location: "서울특별시 용산구",
+      duration: 120,
+      rating: 4.1
     }
   ]
 };
 
+// 기본 스팟들 (지역이 없을 때 사용)
+export const defaultTripSpots: TripSpot[] = [
+  {
+    id: "default-1",
+    name: "관광명소 A",
+    category: "nature",
+    description: "아름다운 자연 경관을 감상할 수 있는 곳",
+    location: "미정",
+    duration: 120,
+    rating: 4.0
+  },
+  {
+    id: "default-2",
+    name: "맛집 B",
+    category: "food",
+    description: "현지 특색 음식을 맛볼 수 있는 맛집",
+    location: "미정",
+    duration: 90,
+    rating: 4.2
+  },
+  {
+    id: "default-3",
+    name: "문화시설 C",
+    category: "culture",
+    description: "지역 문화를 체험할 수 있는 장소",
+    location: "미정",
+    duration: 150,
+    rating: 4.1
+  },
+  {
+    id: "default-4",
+    name: "카페 D",
+    category: "cafe",
+    description: "휴식을 취할 수 있는 분위기 좋은 카페",
+    location: "미정",
+    duration: 60,
+    rating: 3.9
+  }
+];
+
 export const generateTripPlan = (location: string, duration: string, interests: string[]): TripPlan => {
-  const spots = mockTripSpots[location] || [];
-  let filteredSpots = spots;
+  console.log("여행 생성 시작:", { location, duration, interests });
   
-  // 관심사가 선택된 경우 필터링, 아니면 모든 스팟 사용
+  // 1. 해당 지역의 스팟 가져오기 (없으면 기본 스팟 사용)
+  let availableSpots = mockTripSpots[location] || defaultTripSpots;
+  console.log("사용 가능한 스팟:", availableSpots.length);
+  
+  // 2. 관심사 필터링
+  let filteredSpots = availableSpots;
   if (interests.length > 0) {
-    filteredSpots = spots.filter(spot => interests.includes(spot.category));
+    filteredSpots = availableSpots.filter(spot => interests.includes(spot.category));
+    console.log("관심사 필터링 후:", filteredSpots.length);
+    
+    // 관심사 필터링 후 스팟이 없으면 모든 스팟 사용
+    if (filteredSpots.length === 0) {
+      filteredSpots = availableSpots;
+      console.log("필터링된 스팟이 없어서 모든 스팟 사용");
+    }
   }
   
-  // 스팟이 없으면 모든 스팟 사용
-  if (filteredSpots.length === 0) {
-    filteredSpots = spots;
+  // 3. 최소 스팟 보장 (적어도 2개는 있어야 함)
+  if (filteredSpots.length < 2 && availableSpots.length >= 2) {
+    filteredSpots = availableSpots.slice(0, 2);
+  } else if (filteredSpots.length === 0) {
+    filteredSpots = defaultTripSpots.slice(0, 2);
   }
   
-  const daysCount = duration === "당일치기" ? 1 : parseInt(duration.charAt(0)) + 1;
+  // 4. 날짜 수 계산
+  const daysCount = duration === "당일치기" ? 1 : parseInt(duration.charAt(0));
+  console.log("여행 일수:", daysCount);
+  
+  // 5. 각 날짜별 스팟 분배
   const days: DayPlan[] = [];
-  
-  // 각 날짜별로 스팟을 고르게 분배
-  const spotsPerDay = Math.max(2, Math.floor(filteredSpots.length / daysCount));
+  const spotsPerDay = Math.max(1, Math.floor(filteredSpots.length / daysCount));
   
   for (let day = 1; day <= daysCount; day++) {
-    const startIndex = (day - 1) * spotsPerDay;
-    const endIndex = day === daysCount ? filteredSpots.length : startIndex + spotsPerDay;
-    const daySpots = filteredSpots.slice(startIndex, endIndex);
+    let daySpots: TripSpot[] = [];
     
-    // 각 날짜마다 최소 2개의 스팟은 있도록 보장
-    if (daySpots.length === 0 && filteredSpots.length > 0) {
-      daySpots.push(filteredSpots[0]);
+    if (day === daysCount) {
+      // 마지막 날은 남은 모든 스팟
+      daySpots = filteredSpots.slice((day - 1) * spotsPerDay);
+    } else {
+      // 일반적인 날은 정해진 수만큼
+      daySpots = filteredSpots.slice((day - 1) * spotsPerDay, day * spotsPerDay);
     }
-    if (daySpots.length === 1 && filteredSpots.length > 1) {
-      const secondSpot = filteredSpots.find(spot => spot.id !== daySpots[0].id);
-      if (secondSpot) daySpots.push(secondSpot);
+    
+    // 각 날짜마다 최소 1개의 스팟은 보장
+    if (daySpots.length === 0 && filteredSpots.length > 0) {
+      const spotIndex = (day - 1) % filteredSpots.length;
+      daySpots = [filteredSpots[spotIndex]];
     }
     
     const totalDuration = daySpots.reduce((sum, spot) => sum + spot.duration, 0);
+    console.log(`Day ${day}: ${daySpots.length}개 스팟, 총 ${totalDuration}분`);
     
     days.push({
       day,
@@ -200,13 +333,16 @@ export const generateTripPlan = (location: string, duration: string, interests: 
     });
   }
   
-  return {
+  const tripPlan = {
     title: `${location} ${duration} 맞춤 여행`,
     duration,
     location,
     interests,
     days
   };
+  
+  console.log("생성된 여행 계획:", tripPlan);
+  return tripPlan;
 };
 
 export const mockOtherUserTrips: OtherUserTrip[] = [

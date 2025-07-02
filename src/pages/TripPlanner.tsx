@@ -178,7 +178,7 @@ const TripPlanner = () => {
             size="lg" 
             className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
             onClick={generateTrip}
-            disabled={!location || selectedInterests.length === 0}
+            disabled={!location.trim()}
           >
             맞춤 여행 코스 생성하기 ✨
           </Button>
