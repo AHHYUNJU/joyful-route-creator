@@ -1,4 +1,3 @@
-
 export interface TripSpot {
   id: string;
   name: string;
@@ -158,6 +157,58 @@ export const mockTripSpots: Record<string, TripSpot[]> = {
   ]
 };
 
+export const generateTripPlan = (location: string, duration: string, interests: string[]): TripPlan => {
+  const spots = mockTripSpots[location] || [];
+  let filteredSpots = spots;
+  
+  // 관심사가 선택된 경우 필터링, 아니면 모든 스팟 사용
+  if (interests.length > 0) {
+    filteredSpots = spots.filter(spot => interests.includes(spot.category));
+  }
+  
+  // 스팟이 없으면 모든 스팟 사용
+  if (filteredSpots.length === 0) {
+    filteredSpots = spots;
+  }
+  
+  const daysCount = duration === "당일치기" ? 1 : parseInt(duration.charAt(0)) + 1;
+  const days: DayPlan[] = [];
+  
+  // 각 날짜별로 스팟을 고르게 분배
+  const spotsPerDay = Math.max(2, Math.floor(filteredSpots.length / daysCount));
+  
+  for (let day = 1; day <= daysCount; day++) {
+    const startIndex = (day - 1) * spotsPerDay;
+    const endIndex = day === daysCount ? filteredSpots.length : startIndex + spotsPerDay;
+    const daySpots = filteredSpots.slice(startIndex, endIndex);
+    
+    // 각 날짜마다 최소 2개의 스팟은 있도록 보장
+    if (daySpots.length === 0 && filteredSpots.length > 0) {
+      daySpots.push(filteredSpots[0]);
+    }
+    if (daySpots.length === 1 && filteredSpots.length > 1) {
+      const secondSpot = filteredSpots.find(spot => spot.id !== daySpots[0].id);
+      if (secondSpot) daySpots.push(secondSpot);
+    }
+    
+    const totalDuration = daySpots.reduce((sum, spot) => sum + spot.duration, 0);
+    
+    days.push({
+      day,
+      spots: daySpots,
+      totalDuration
+    });
+  }
+  
+  return {
+    title: `${location} ${duration} 맞춤 여행`,
+    duration,
+    location,
+    interests,
+    days
+  };
+};
+
 export const mockOtherUserTrips: OtherUserTrip[] = [
   {
     id: "trip-1",
@@ -249,33 +300,3 @@ export const mockOtherUserTrips: OtherUserTrip[] = [
     createdAt: "2024-05-01"
   }
 ];
-
-export const generateTripPlan = (location: string, duration: string, interests: string[]): TripPlan => {
-  const spots = mockTripSpots[location] || [];
-  const filteredSpots = spots.filter(spot => 
-    interests.length === 0 || interests.includes(spot.category)
-  );
-  
-  const daysCount = duration === "당일치기" ? 1 : parseInt(duration.charAt(0)) + 1;
-  const days: DayPlan[] = [];
-  
-  // 관심사별로 스팟을 분배
-  for (let day = 1; day <= daysCount; day++) {
-    const daySpots = filteredSpots.slice((day - 1) * 2, day * 2 + 1);
-    const totalDuration = daySpots.reduce((sum, spot) => sum + spot.duration, 0);
-    
-    days.push({
-      day,
-      spots: daySpots,
-      totalDuration
-    });
-  }
-  
-  return {
-    title: `${location} ${duration} 맞춤 여행`,
-    duration,
-    location,
-    interests,
-    days
-  };
-};
