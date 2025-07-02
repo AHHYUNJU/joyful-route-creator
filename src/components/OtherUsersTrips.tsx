@@ -35,11 +35,10 @@ const OtherUsersTrips = ({ selectedLocation, selectedDuration, selectedInterests
   const getFilteredTrips = () => {
     let filteredTrips = mockOtherUserTrips;
 
-    // Filter by location if selected
+    // Filter by location if selected - exact match only
     if (selectedLocation && selectedLocation.trim()) {
       filteredTrips = filteredTrips.filter(trip => 
-        trip.tripPlan.location.includes(selectedLocation) || 
-        selectedLocation.includes(trip.tripPlan.location)
+        trip.tripPlan.location === selectedLocation
       );
     }
 
@@ -50,25 +49,15 @@ const OtherUsersTrips = ({ selectedLocation, selectedDuration, selectedInterests
       );
     }
 
-    // If no trips match the filters, show all trips but prioritize by location
-    if (filteredTrips.length === 0) {
-      filteredTrips = mockOtherUserTrips;
-      if (selectedLocation && selectedLocation.trim()) {
-        // Sort to prioritize trips from the same location
-        filteredTrips = [...filteredTrips].sort((a, b) => {
-          const aMatches = a.tripPlan.location.includes(selectedLocation) || selectedLocation.includes(a.tripPlan.location);
-          const bMatches = b.tripPlan.location.includes(selectedLocation) || selectedLocation.includes(b.tripPlan.location);
-          if (aMatches && !bMatches) return -1;
-          if (!aMatches && bMatches) return 1;
-          return 0;
-        });
-      }
-    }
-
     return filteredTrips;
   };
 
   const filteredTrips = getFilteredTrips();
+
+  // Don't show the section if no location is selected
+  if (!selectedLocation || !selectedLocation.trim()) {
+    return null;
+  }
 
   if (selectedTrip) {
     return (
@@ -164,16 +153,14 @@ const OtherUsersTrips = ({ selectedLocation, selectedDuration, selectedInterests
         <CardTitle className="flex items-center gap-2">
           <Heart className="w-5 h-5 text-pink-500" />
           다른 사람들 코스 둘러보기
-          {selectedLocation && (
-            <Badge variant="secondary" className="text-xs">
-              {selectedLocation} 중심
-            </Badge>
-          )}
+          <Badge variant="secondary" className="text-xs">
+            {selectedLocation}
+          </Badge>
         </CardTitle>
         <CardDescription>
-          {selectedLocation && selectedDuration 
+          {selectedDuration 
             ? `${selectedLocation} ${selectedDuration} 여행자들이 만든 코스를 참고해보세요`
-            : "비슷한 취향의 여행자들이 만든 코스를 참고해보세요"
+            : `${selectedLocation} 여행자들이 만든 코스를 참고해보세요`
           }
         </CardDescription>
       </CardHeader>
@@ -283,8 +270,8 @@ const OtherUsersTrips = ({ selectedLocation, selectedDuration, selectedInterests
           ))
         ) : (
           <div className="text-center py-8 text-gray-500">
-            <p>해당 조건에 맞는 추천 코스가 아직 없습니다.</p>
-            <p className="text-sm mt-2">다른 지역이나 기간으로 검색해보세요.</p>
+            <p>{selectedLocation}에 대한 추천 코스가 아직 없습니다.</p>
+            <p className="text-sm mt-2">첫 번째로 {selectedLocation} 코스를 만들어보세요!</p>
           </div>
         )}
       </CardContent>

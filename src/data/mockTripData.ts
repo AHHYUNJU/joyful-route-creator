@@ -228,6 +228,63 @@ export const mockTripSpots: Record<string, TripSpot[]> = {
       duration: 120,
       rating: 4.1
     }
+  ],
+  "강릉": [
+    {
+      id: "gangneung-1",
+      name: "경포해변",
+      category: "nature",
+      description: "강릉의 대표적인 해변으로 아름다운 일출로 유명",
+      location: "강원특별자치도 강릉시 경포동",
+      duration: 120,
+      rating: 4.4,
+      openTime: "24시간",
+      closeTime: "24시간"
+    },
+    {
+      id: "gangneung-2",
+      name: "안목해변 커피거리",
+      category: "cafe",
+      description: "바다를 보며 커피를 마실 수 있는 특별한 거리",
+      location: "강원특별자치도 강릉시 견소동",
+      duration: 90,
+      rating: 4.3,
+      openTime: "06:00",
+      closeTime: "23:00"
+    },
+    {
+      id: "gangneung-3",
+      name: "정동진",
+      category: "nature",
+      description: "기차역에서 바로 보이는 바다 풍경이 아름다운 곳",
+      location: "강원특별자치도 강릉시 강동면",
+      duration: 150,
+      rating: 4.5,
+      openTime: "24시간",
+      closeTime: "24시간"
+    },
+    {
+      id: "gangneung-4",
+      name: "오죽헌",
+      category: "culture",
+      description: "율곡 이이와 신사임당의 유적지",
+      location: "강원특별자치도 강릉시 죽헌동",
+      duration: 90,
+      rating: 4.2,
+      openTime: "09:00",
+      closeTime: "18:00"
+    },
+    {
+      id: "gangneung-5",
+      name: "강릉중앙시장",
+      category: "food",
+      description: "강릉 전통 먹거리를 맛볼 수 있는 재래시장",
+      location: "강원특별자치도 강릉시 성남동",
+      duration: 120,
+      rating: 4.1,
+      openTime: "06:00",
+      closeTime: "21:00"
+    }
   ]
 };
 
@@ -590,5 +647,122 @@ export const mockOtherUserTrips: OtherUserTrip[] = [
     ],
     likes: 25,
     createdAt: "2024-05-25"
+  },
+  {
+    id: "trip-7",
+    userId: "user-7",
+    userName: "바다여행 소희",
+    userType: "힐링여행러",
+    tripPlan: {
+      title: "강릉 바다 힐링 여행",
+      duration: "1박2일",
+      location: "강릉",
+      interests: ["nature", "cafe"],
+      days: [
+        {
+          day: 1,
+          spots: [
+            {
+              id: "gangneung-1",
+              name: "경포해변",
+              category: "nature",
+              description: "강릉의 대표적인 해변으로 아름다운 일출로 유명",
+              location: "강원특별자치도 강릉시 경포동",
+              duration: 120,
+              rating: 4.4
+            },
+            {
+              id: "gangneung-2",
+              name: "안목해변 커피거리",
+              category: "cafe",
+              description: "바다를 보며 커피를 마실 수 있는 특별한 거리",
+              location: "강원특별자치도 강릉시 견소동",
+              duration: 90,
+              rating: 4.3
+            }
+          ],
+          totalDuration: 210
+        }
+      ]
+    },
+    reviews: [
+      {
+        id: "review-8",
+        userId: "reviewer-8",
+        userName: "커피애호가",
+        rating: 5,
+        comment: "안목해변 커피거리 정말 좋아요! 바다 보며 마시는 커피 맛이 일품입니다.",
+        date: "2024-06-25",
+        helpful: 11
+      }
+    ],
+    likes: 19,
+    createdAt: "2024-06-20"
+  },
+  {
+    id: "trip-8",
+    userId: "user-8",
+    userName: "문화탐방 진우",
+    userType: "문화여행가",
+    tripPlan: {
+      title: "강릉 문화유산 투어",
+      duration: "2박3일",
+      location: "강릉",
+      interests: ["culture", "nature"],
+      days: [
+        {
+          day: 1,
+          spots: [
+            {
+              id: "gangneung-4",
+              name: "오죽헌",
+              category: "culture",
+              description: "율곡 이이와 신사임당의 유적지",
+              location: "강원특별자치도 강릉시 죽헌동",
+              duration: 90,
+              rating: 4.2
+            },
+            {
+              id: "gangneung-3",
+              name: "정동진",
+              category: "nature",
+              description: "기차역에서 바로 보이는 바다 풍경이 아름다운 곳",
+              location: "강원특별자치도 강릉시 강동면",
+              duration: 150,
+              rating: 4.5
+            }
+          ],
+          totalDuration: 240
+        },
+        {
+          day: 2,
+          spots: [
+            {
+              id: "gangneung-5",
+              name: "강릉중앙시장",
+              category: "food",
+              description: "강릉 전통 먹거리를 맛볼 수 있는 재래시장",
+              location: "강원특별자치도 강릉시 성남동",
+              duration: 120,
+              rating: 4.1
+            }
+          ],
+          totalDuration: 120
+        }
+      ]
+    },
+    reviews: [
+      {
+        id: "review-9",
+        userId: "reviewer-9",
+        userName: "역사애호가",
+        rating: 4,
+        comment: "오죽헌에서 율곡 이이의 발자취를 느낄 수 있어서 좋았어요. 정동진 일출도 감동적이었습니다.",
+        date: "2024-06-18",
+        helpful: 13
+      }
+    ],
+    likes: 21,
+    createdAt: "2024-06-15"
   }
 ];
