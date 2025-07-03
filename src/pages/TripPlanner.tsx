@@ -5,11 +5,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Heart, Sparkles } from "lucide-react";
+import { MapPin, Sparkles } from "lucide-react";
 import { generateTripPlan, TripPlan } from "@/data/mockTripData";
 import TripPlanDisplay from "@/components/TripPlanDisplay";
 import TripSummaryCard from "@/components/TripSummaryCard";
 import TripDatePicker from "@/components/TripDatePicker";
+import TripDetailsForm from "@/components/TripDetailsForm";
 import OtherUsersTrips from "@/components/OtherUsersTrips";
 import Map from "@/components/Map";
 
@@ -17,20 +18,12 @@ const TripPlanner = () => {
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [duration, setDuration] = useState("2박3일");
   const [location, setLocation] = useState("");
+  const [budget, setBudget] = useState("medium");
+  const [companion, setCompanion] = useState("couple");
+  const [travelStyle, setTravelStyle] = useState("nature");
   const [generatedTrip, setGeneratedTrip] = useState<TripPlan | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [personalityData, setPersonalityData] = useState<any>(null);
-
-  const interests = [
-    { id: "nature", label: "자연/산책", emoji: "🌲" },
-    { id: "culture", label: "문화유산", emoji: "🏛️" },
-    { id: "food", label: "맛집탐방", emoji: "🍜" },
-    { id: "cafe", label: "트렌디카페", emoji: "☕" },
-    { id: "shopping", label: "쇼핑", emoji: "🛍️" },
-    { id: "nightlife", label: "야경/야시장", emoji: "🌃" },
-    { id: "activity", label: "액티비티", emoji: "🎯" },
-    { id: "quiet", label: "조용한 힐링", emoji: "🧘" }
-  ];
 
   // Load personality data on component mount
   useEffect(() => {
@@ -39,31 +32,42 @@ const TripPlanner = () => {
       const data = JSON.parse(stored);
       setPersonalityData(data);
       
-      // Auto-apply personality interests
+      // Auto-apply personality data
       if (data.interests) {
         setSelectedInterests(data.interests);
       }
-      
-      // Suggest recommended locations
-      if (data.recommendations && data.recommendations.length > 0 && !location) {
-        // Don't auto-set location, just make it available for suggestion
+      if (data.travelStyle) {
+        setTravelStyle(data.travelStyle === "자연 중심" ? "nature" : 
+                     data.travelStyle === "도심 중심" ? "urban" :
+                     data.travelStyle === "맛집 중심" ? "food" : 
+                     data.travelStyle === "감성 중심" ? "emotional" : "nature");
+      }
+      if (data.companion) {
+        setCompanion(data.companion === "혼자 또는 소수 인원" ? "alone" :
+                    data.companion === "친구들과 함께" ? "friends" :
+                    data.companion === "가족 또는 친구" ? "family" :
+                    data.companion === "연인 또는 혼자" ? "couple" : "couple");
+      }
+      if (data.budget) {
+        setBudget(data.budget === "중간 예산" ? "medium" :
+                 data.budget === "높은 예산" ? "high" :
+                 data.budget === "중상 예산" ? "high" : "medium");
       }
     }
   }, []);
-
-  const toggleInterest = (interestId: string) => {
-    setSelectedInterests(prev => 
-      prev.includes(interestId) 
-        ? prev.filter(id => id !== interestId)
-        : [...prev, interestId]
-    );
-  };
 
   const generateTrip = async () => {
     if (isGenerating) return;
     
     setIsGenerating(true);
-    console.log("Generating trip with:", { location, duration, selectedInterests });
+    console.log("Generating trip with:", { 
+      location, 
+      duration, 
+      selectedInterests, 
+      budget, 
+      companion, 
+      travelStyle 
+    });
     
     // Simulate loading time for better UX
     await new Promise(resolve => setTimeout(resolve, 1500));
@@ -83,11 +87,13 @@ const TripPlanner = () => {
     setLocation("");
     setSelectedInterests(personalityData?.interests || []);
     setDuration("2박3일");
+    setBudget("medium");
+    setCompanion("couple");
+    setTravelStyle("nature");
     setIsGenerating(false);
   };
 
   const handleDateChange = (startDate: Date | undefined, endDate: Date | undefined, returnTime?: string) => {
-    // Handle date changes from the calendar picker
     console.log("Date changed:", { startDate, endDate, returnTime });
   };
 
@@ -164,38 +170,18 @@ const TripPlanner = () => {
             onDurationChange={handleDurationChange}
           />
 
-          {/* 관심사 선택 */}
-          <Card className="bg-white/80 backdrop-blur-sm shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Heart className="w-5 h-5 text-pink-500" />
-                관심사 선택
-                {personalityData && (
-                  <Badge variant="secondary" className="text-xs">
-                    성향 기반 자동 선택됨
-                  </Badge>
-                )}
-              </CardTitle>
-              <CardDescription>
-                관심 있는 여행 테마를 선택해주세요 (복수 선택 가능)
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-3">
-                {interests.map((interest) => (
-                  <Button
-                    key={interest.id}
-                    variant={selectedInterests.includes(interest.id) ? "default" : "outline"}
-                    className="h-auto p-3 flex flex-col items-center gap-1"
-                    onClick={() => toggleInterest(interest.id)}
-                  >
-                    <span className="text-xl">{interest.emoji}</span>
-                    <span className="text-sm">{interest.label}</span>
-                  </Button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          {/* 상세 여행 정보 입력 */}
+          <TripDetailsForm
+            selectedInterests={selectedInterests}
+            onInterestsChange={setSelectedInterests}
+            budget={budget}
+            onBudgetChange={setBudget}
+            companion={companion}
+            onCompanionChange={setCompanion}
+            travelStyle={travelStyle}
+            onTravelStyleChange={setTravelStyle}
+            personalityData={personalityData}
+          />
 
           {/* 지도 미리보기 */}
           <Card className="bg-white/80 backdrop-blur-sm shadow-lg">

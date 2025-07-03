@@ -1,11 +1,10 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { MapPin, Clock, Calendar, Star, Navigation } from "lucide-react";
-import { TripPlan, TripDay } from "@/data/mockTripData";
+import { TripPlan } from "@/data/mockTripData";
 import Map from "./Map";
 
 interface TripSummaryCardProps {
@@ -13,7 +12,7 @@ interface TripSummaryCardProps {
 }
 
 const TripSummaryCard = ({ tripPlan }: TripSummaryCardProps) => {
-  const [selectedDay, setSelectedDay] = useState<TripDay | null>(null);
+  const [selectedDay, setSelectedDay] = useState<any>(null);
   const [showMap, setShowMap] = useState(false);
 
   const totalDuration = tripPlan.days.reduce((acc, day) => acc + day.totalDuration, 0);
@@ -23,7 +22,7 @@ const TripSummaryCard = ({ tripPlan }: TripSummaryCardProps) => {
     return acc + dayAverage;
   }, 0) / tripPlan.days.length;
 
-  const openDayModal = (day: TripDay) => {
+  const openDayModal = (day: any) => {
     setSelectedDay(day);
   };
 
@@ -126,7 +125,7 @@ const TripSummaryCard = ({ tripPlan }: TripSummaryCardProps) => {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            {selectedDay?.spots.map((spot, index) => (
+            {selectedDay?.spots.map((spot: any, index: number) => (
               <div key={spot.id} className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
                 <div className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
                   {index + 1}

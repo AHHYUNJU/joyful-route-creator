@@ -37,6 +37,36 @@ const questions = [
       { value: "restaurant", label: "🍽️ 주변 맛집이 많은 곳", type: "미식집착파" },
       { value: "unique", label: "✨ 독특하고 감성적인 공간", type: "감성 스냅러" }
     ]
+  },
+  {
+    id: 4,
+    question: "선호하는 이동 수단은?",
+    options: [
+      { value: "walk", label: "🚶‍♀️ 천천히 걸으며 둘러보기", type: "자연 힐링파" },
+      { value: "public", label: "🚇 대중교통으로 빠르게", type: "도시탐험파" },
+      { value: "car", label: "🚗 자유로운 렌터카", type: "미식집착파" },
+      { value: "bike", label: "🚲 자전거로 감성 라이딩", type: "감성 스냅러" }
+    ]
+  },
+  {
+    id: 5,
+    question: "이상적인 여행 동반자는?",
+    options: [
+      { value: "alone", label: "👤 혼자만의 시간", type: "자연 힐링파" },
+      { value: "friends", label: "👥 활발한 친구들과", type: "도시탐험파" },
+      { value: "family", label: "👨‍👩‍👧‍👦 가족과 함께", type: "미식집착파" },
+      { value: "couple", label: "💑 연인과 로맨틱하게", type: "감성 스냅러" }
+    ]
+  },
+  {
+    id: 6,
+    question: "여행지에서 가장 하고 싶은 활동은?",
+    options: [
+      { value: "nature_activity", label: "🏔️ 등산, 트레킹", type: "자연 힐링파" },
+      { value: "culture_activity", label: "🏛️ 박물관, 전시 관람", type: "도시탐험파" },
+      { value: "food_activity", label: "🍳 쿠킹 클래스, 시장 투어", type: "미식집착파" },
+      { value: "photo_activity", label: "📱 감성 카페, 포토스팟", type: "감성 스냅러" }
+    ]
   }
 ];
 
