@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,7 +8,6 @@ import { MapPin, Sparkles } from "lucide-react";
 import { generateTripPlan } from "@/data/mockTripData";
 import TripDatePicker from "@/components/TripDatePicker";
 import TripDetailsForm from "@/components/TripDetailsForm";
-import Map from "@/components/Map";
 
 const TripPlanner = () => {
   const navigate = useNavigate();
@@ -211,19 +209,6 @@ const TripPlanner = () => {
             onTravelStyleChange={setTravelStyle}
             personalityData={personalityData}
           />
-
-          {/* 지도 미리보기 */}
-          <Card className="bg-white/80 backdrop-blur-sm shadow-lg">
-            <CardHeader>
-              <CardTitle>지도 미리보기</CardTitle>
-              <CardDescription>
-                여행지를 선택하면 지도에서 확인할 수 있습니다
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Map location={locationInput} />
-            </CardContent>
-          </Card>
 
           {/* 여행 코스 생성 버튼 */}
           <Button 
