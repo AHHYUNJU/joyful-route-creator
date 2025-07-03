@@ -1,27 +1,26 @@
 
 import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import { MapPin, Sparkles } from "lucide-react";
-import { generateTripPlan, TripPlan } from "@/data/mockTripData";
-import TripPlanDisplay from "@/components/TripPlanDisplay";
-import TripSummaryCard from "@/components/TripSummaryCard";
+import { generateTripPlan } from "@/data/mockTripData";
 import TripDatePicker from "@/components/TripDatePicker";
 import TripDetailsForm from "@/components/TripDetailsForm";
-import OtherUsersTrips from "@/components/OtherUsersTrips";
 import Map from "@/components/Map";
 
 const TripPlanner = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [duration, setDuration] = useState("2박3일");
-  const [location, setLocation] = useState("");
+  const [locationInput, setLocationInput] = useState("");
   const [budget, setBudget] = useState("medium");
   const [companion, setCompanion] = useState("couple");
   const [travelStyle, setTravelStyle] = useState("nature");
-  const [generatedTrip, setGeneratedTrip] = useState<TripPlan | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [personalityData, setPersonalityData] = useState<any>(null);
 
@@ -56,12 +55,43 @@ const TripPlanner = () => {
     }
   }, []);
 
+  // Handle reset form state from navigation
+  useEffect(() => {
+    if (location.state?.resetForm) {
+      // Reset to personality data or defaults
+      const stored = localStorage.getItem('personalityResult');
+      if (stored) {
+        const data = JSON.parse(stored);
+        setSelectedInterests(data.interests || []);
+        setTravelStyle(data.travelStyle === "자연 중심" ? "nature" : 
+                      data.travelStyle === "도심 중심" ? "urban" :
+                      data.travelStyle === "맛집 중심" ? "food" : 
+                      data.travelStyle === "감성 중심" ? "emotional" : "nature");
+        setCompanion(data.companion === "혼자 또는 소수 인원" ? "alone" :
+                    data.companion === "친구들과 함께" ? "friends" :
+                    data.companion === "가족 또는 친구" ? "family" :
+                    data.companion === "연인 또는 혼자" ? "couple" : "couple");
+        setBudget(data.budget === "중간 예산" ? "medium" :
+                 data.budget === "높은 예산" ? "high" :
+                 data.budget === "중상 예산" ? "high" : "medium");
+      } else {
+        setSelectedInterests([]);
+        setTravelStyle("nature");
+        setCompanion("couple");
+        setBudget("medium");
+      }
+      setLocationInput("");
+      setDuration("2박3일");
+      setIsGenerating(false);
+    }
+  }, [location.state]);
+
   const generateTrip = async () => {
     if (isGenerating) return;
     
     setIsGenerating(true);
     console.log("Generating trip with:", { 
-      location, 
+      location: locationInput, 
       duration, 
       selectedInterests, 
       budget, 
@@ -72,24 +102,23 @@ const TripPlanner = () => {
     // Simulate loading time for better UX
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    const tripPlan = generateTripPlan(location, duration, selectedInterests);
-    setGeneratedTrip(tripPlan);
-    setIsGenerating(false);
-  };
-
-  const restartPlanning = () => {
-    setGeneratedTrip(null);
-    setIsGenerating(false);
-  };
-
-  const handleNewPlan = () => {
-    setGeneratedTrip(null);
-    setLocation("");
-    setSelectedInterests(personalityData?.interests || []);
-    setDuration("2박3일");
-    setBudget("medium");
-    setCompanion("couple");
-    setTravelStyle("nature");
+    const tripPlan = generateTripPlan(locationInput, duration, selectedInterests);
+    
+    // Navigate to generated trip page with data
+    navigate('/generated-trip', {
+      state: {
+        tripData: tripPlan,
+        formData: {
+          location: locationInput,
+          duration,
+          selectedInterests,
+          budget,
+          companion,
+          travelStyle
+        }
+      }
+    });
+    
     setIsGenerating(false);
   };
 
@@ -141,8 +170,8 @@ const TripPlanner = () => {
                 <Input 
                   id="location"
                   placeholder="예: 제주도, 부산, 서울 등"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
+                  value={locationInput}
+                  onChange={(e) => setLocationInput(e.target.value)}
                   className="mt-2"
                 />
                 {personalityData?.recommendations && (
@@ -152,7 +181,7 @@ const TripPlanner = () => {
                         key={rec}
                         variant="outline"
                         size="sm"
-                        onClick={() => setLocation(rec)}
+                        onClick={() => setLocationInput(rec)}
                         className="text-xs"
                       >
                         {rec}
@@ -192,46 +221,19 @@ const TripPlanner = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Map location={location} />
+              <Map location={locationInput} />
             </CardContent>
           </Card>
 
           {/* 여행 코스 생성 버튼 */}
-          <div className="flex gap-3">
-            <Button 
-              size="lg" 
-              className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-              onClick={generateTrip}
-              disabled={!location.trim() || isGenerating}
-            >
-              {isGenerating ? "여행 코스 생성 중..." : "맞춤 여행 코스 생성하기 ✨"}
-            </Button>
-            {generatedTrip && (
-              <Button 
-                variant="outline" 
-                size="lg"
-                onClick={handleNewPlan}
-                className="border-blue-200 text-blue-600 hover:bg-blue-50"
-              >
-                새로 짜기
-              </Button>
-            )}
-          </div>
-
-          {/* 생성된 여행 코스 표시 */}
-          {generatedTrip && (
-            <div className="space-y-6">
-              <TripSummaryCard tripPlan={generatedTrip} />
-              <TripPlanDisplay tripPlan={generatedTrip} onRestart={restartPlanning} />
-            </div>
-          )}
-
-          {/* 다른 사람들의 코스 */}
-          <OtherUsersTrips 
-            selectedLocation={location}
-            selectedDuration={duration}
-            selectedInterests={selectedInterests}
-          />
+          <Button 
+            size="lg" 
+            className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+            onClick={generateTrip}
+            disabled={!locationInput.trim() || isGenerating}
+          >
+            {isGenerating ? "여행 코스 생성 중..." : "맞춤 여행 코스 생성하기 ✨"}
+          </Button>
         </div>
       </div>
     </div>
